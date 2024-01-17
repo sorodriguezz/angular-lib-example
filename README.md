@@ -1,27 +1,122 @@
-# TestLibrary
+<p align="center">
+  <img src="https://raw.githubusercontent.com/angular/angular/main/aio/src/assets/images/logos/angular/angular_renaissance.png" alt="angular-logo" width="300px" height="300px"/>
+  <br>
+</p>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
+# Librería Angular v17
+Este repositorio contiene un ejemplo sencillo para crear un libreria y publicar en npm. Esto para usar en los proyectos que queramos.
 
-## Development server
+### Dependecias
+- Angular v17
+- NodeJS >=18
+- npm >=10
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Creación de proyecto sin estructura
+Para instalar iniciar el proyecto se debe usar:
+```bash
+ng new name_project --no-create-application
+```
+Esto creará un proyecto angular sin estructura de directorios
 
-## Code scaffolding
+### Creación de librería
+Para crear la librería dentro del proyecto que creamos, debemos usar:
+```bash
+cd name_project
+ng generate library ngx-mylibrary
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Creación de componente
+Como sabemos, en la versión 17 de Angular ya no es necesario el uso de módulos. Ya los componentes se crean por defecto ```standalone```.
+Para crear el componente simplemente hacemos:
+```bash
+ng g c input-test
+```
 
-## Build
+Para este ejemplo se usó ```input-test``` como componente. Esto nos generará una estructura como esta:
+```
+└── 📁ngx-mylibrary
+    └── README.md
+    └── ng-package.json
+    └── package.json
+    └── 📁src
+        └── 📁lib
+            └── 📁input-test
+                └── input-test.component.css
+                └── input-test.component.html
+                └── input-test.component.spec.ts
+                └── input-test.component.ts
+            └── ngx-mylibrary.component.spec.ts
+            └── ngx-mylibrary.component.ts
+            └── ngx-mylibrary.service.spec.ts
+            └── ngx-mylibrary.service.ts
+        └── public-api.ts
+    └── tsconfig.lib.json
+    └── tsconfig.lib.prod.json
+    └── tsconfig.spec.json
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Una vez creado el componente (tambien puede ser servicio) en el archivo ```public-api.ts``` se exportan de manera publica.
 
-## Running unit tests
+El cual quedará de la siguiente manera:
+```javascript
+/*
+ * Public API Surface of ngx-mylibrary
+ */
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+export * from './lib/ngx-mylibrary.service';
+export * from './lib/ngx-mylibrary.component';
+export * from './lib/input-test/input-test.component';
+```
 
-## Running end-to-end tests
+### Contruir librería
+Para construir la librería usamos el siguiente comando en la raiz del proyecto:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm build ngx-mylibrary
+```
 
-## Further help
+Esto generará un directorio llamado ```dist``` y en su interior el directorio con el nombre de la librería, para este caso es ```ngx-mylibrary```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Empaquetar librería
+Para empaquetar la librería usamos el siguiente comando, pero antes debemos ingresar a la ruta de la librería creada:
+```bash
+cd dist/ngx-mylibrary
+npm pack
+```
+
+Esto generará un archivo con extensión ```.tgz```, para este caso se llama ```ngx-mylibrary-0.0.1.tgz```.
+
+### Uso de librería en local
+Para hacer uso de la librería en local. Vamos donde se encuentre nuestro ```.tgz``` y copiamos la ruta de acceso al archivo.
+
+Una vez copiada la ruta de acceso. Vamos al proyecto donde deseamos usar la libraría y usamo el comando:
+```bash
+npm i ruta-acceso/ngx-mylibrary-0.0.1.tgz
+```
+
+Para ver que se instaló exitosamente, vamos al ```package.json``` del proyecto donde usamos la librería y deberia aparecer la siguiente linea en las dependecias:
+
+```bash
+"ngx-mylibrary": "file:../nombre-proyecto/dist/ngx-mylibrary/ngx-mylibrary-0.0.1.tgz",
+```
+
+### Publicar en NPM
+Para publicar nuestra librería debemos crear una cuenta en [NPM](https://www.npmjs.com/).
+
+Una vez creada la cuenta, debemos hacer:
+```bash
+npm login
+```
+Esto nos abrirá una ventana para loguearnos.
+
+Una vez logueados, publicamos nuestra librería con el siguiente comando. Pero antes, debemos ingresar donde se encuentrá nuestro empaquetado:
+
+```bash
+cd dist/ngx-mylibrary
+npm publish
+```
+
+Una vez terminado esto, veremos nuestra librería en el sitio de NPM y para hacer uso de esta la instalamos como cualquier otra librería:
+```bash
+npm i ngx-mylibrary
+```
